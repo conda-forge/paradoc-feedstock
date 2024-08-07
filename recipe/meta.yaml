@@ -12,13 +12,14 @@ source:
 build:
   noarch: python
   number: 0
-  script: python -m pip install . --no-deps -vv
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   entry_points:
     - paradoc=paradoc.cli_app:app
 
 requirements:
   host:
     - python >=3.10
+    - pip
   run:
     - python >=3.10
     - pandoc 3.1.2
@@ -42,9 +43,11 @@ test:
     - tests
     - files
   requires:
+    - pip
     - pytest
     - pytest-cov
   commands:
+    - pip check
     - cd tests
     - pytest -k "not test_math_docx"  # test_math_docx is awaiting pytexit on conda-forge
 
