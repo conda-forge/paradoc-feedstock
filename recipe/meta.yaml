@@ -34,7 +34,6 @@ requirements:
     - svgwrite
     - pytexit # not yet available on conda-forge
     - typer
-    - nomkl
     - __unix  # [unix]
     - __win   # [win]
     - pywin32  # [win]
