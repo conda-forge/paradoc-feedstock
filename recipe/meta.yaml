@@ -32,7 +32,7 @@ requirements:
     - openpyxl
     - tabulate
     - svgwrite
-    - pytexit # not yet available on conda-forge
+    - pytexit
     - typer
     - __unix  # [unix]
     - __win   # [win]
