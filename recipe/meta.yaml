@@ -19,6 +19,7 @@ build:
 requirements:
   host:
     - python >=3.10
+    - pip
   run:
     - python >=3.10
     - pandoc 3.1.2
@@ -31,7 +32,7 @@ requirements:
     - openpyxl
     - tabulate
     - svgwrite
-    #- pytexit # not yet available on conda-forge
+    - pytexit # not yet available on conda-forge
     - typer
     - nomkl
     - __unix  # [unix]
@@ -46,7 +47,7 @@ test:
     - pytest-cov
   commands:
     - cd tests
-    - pytest -k "not test_math_docx"  # test_math_docx is awaiting pytexit on conda-forge
+    - pytest
 
 about:
   home: https://github.com/krande/paradoc
