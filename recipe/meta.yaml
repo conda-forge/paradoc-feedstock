@@ -1,3 +1,4 @@
+{% set python_min = '3.10' %}
 {% set name = "paradoc" %}
 {% set version = "0.3.3" %}
 
@@ -11,17 +12,17 @@ source:
 
 build:
   noarch: python
-  number: 0
+  number: 1
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   entry_points:
     - paradoc=paradoc.cli_app:app
 
 requirements:
   host:
-    - python >=3.10
+    - python {{ python_min }}
     - pip
   run:
-    - python >=3.10
+    - python >={{ python_min }}
     - pandoc 3.1.2
     - pandoc-crossref 0.3.16
     - pypandoc 1.12
@@ -44,6 +45,7 @@ test:
   requires:
     - pytest
     - pytest-cov
+    - python {{ python_min }}
   commands:
     - cd tests
     - pytest
