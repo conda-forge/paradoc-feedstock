@@ -1,9 +1,9 @@
 schema_version: 1
 
 context:
-  python_min: 3.10
+  python_min: "3.10"
   name: paradoc
-  version: "0.5.0"
+  version: "0.6.0"
 
 package:
   name: ${{ name }}
@@ -11,9 +11,9 @@ package:
 
 source:
   url: https://github.com/Krande/paradoc/archive/v${{ version }}.tar.gz
-  sha256: eb7da009925546283bd0a283e75503b41a63be624e9054504ccae4b010610eae
+  sha256: 7892bc979d569701c08daeb8531a237173f22589e8e0306721df742a5f8e51ae
   patches:
-    - patches/add_future_annotations.patch
+    - patches/remove_pypandoc_encoding_kwarg.patch
 
 build:
   number: 0
@@ -22,10 +22,12 @@ build:
   python:
     entry_points:
       - paradoc=paradoc.cli_app:app
+      - paradoc-serve=paradoc.serve.cli:app
+      - paradoc-migrate-syntax=paradoc.cli.migrate_syntax:app
 
 requirements:
   host:
-    - python 3.10.*
+    - python ${{ python_min }}.*
     - pip
     - setuptools
   run:
@@ -56,15 +58,34 @@ tests:
       source:
         - tests
         - files
+      recipe:
+        - setup_browser.py
     requirements:
       run:
         - pytest
         - pytest-cov
+        - pytest-timeout
         - python ${{ python_min }}.*
         - playwright
         - pytest-playwright
     script:
-      - pytest tests --ignore=tests/frontend
+      # --timeout with the thread method (works on Windows) fails any test that
+      # hangs instead of stalling CI, and dumps the hung test's stack trace.
+      - if: not win
+        then:
+          - pytest tests --ignore=tests/frontend --timeout=300 --timeout-method=thread
+      - if: win
+        then:
+          # paradoc's plot tests render Plotly figures via python-kaleido, which
+          # drives a headless browser through choreographer. No browser ships
+          # with conda, and choreographer's auto-discovery picks the registry
+          # Chrome, which stalls the devtools handshake and hangs the suite.
+          # setup_browser.py resolves a usable browser -- Chrome-for-Testing
+          # (Option A) or the runner's pre-installed Edge (Option B fallback) --
+          # and prints its exe path; BROWSER_PATH overrides the auto-discovery.
+          - python setup_browser.py > browser_path.txt
+          - set /p BROWSER_PATH=<browser_path.txt
+          - pytest tests --ignore=tests/frontend --timeout=300 --timeout-method=thread
 
 about:
   license: GPL-3.0-or-later
