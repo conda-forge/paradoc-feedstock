@@ -3,7 +3,7 @@ schema_version: 1
 context:
   python_min: 3.10
   name: paradoc
-  version: "0.5.0"
+  version: "0.6.0"
 
 package:
   name: ${{ name }}
@@ -11,7 +11,7 @@ package:
 
 source:
   url: https://github.com/Krande/paradoc/archive/v${{ version }}.tar.gz
-  sha256: eb7da009925546283bd0a283e75503b41a63be624e9054504ccae4b010610eae
+  sha256: 7892bc979d569701c08daeb8531a237173f22589e8e0306721df742a5f8e51ae
   patches:
     - patches/add_future_annotations.patch
 
