@@ -62,11 +62,14 @@ tests:
       run:
         - pytest
         - pytest-cov
+        - pytest-timeout
         - python ${{ python_min }}.*
         - playwright
         - pytest-playwright
     script:
-      - pytest tests --ignore=tests/frontend
+      # --timeout with the thread method (works on Windows) fails any test that
+      # hangs instead of stalling CI, and dumps the hung test's stack trace.
+      - pytest tests --ignore=tests/frontend --timeout=300 --timeout-method=thread
 
 about:
   license: GPL-3.0-or-later
