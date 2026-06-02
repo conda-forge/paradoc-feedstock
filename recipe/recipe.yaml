@@ -69,7 +69,20 @@ tests:
     script:
       # --timeout with the thread method (works on Windows) fails any test that
       # hangs instead of stalling CI, and dumps the hung test's stack trace.
-      - pytest tests --ignore=tests/frontend --timeout=300 --timeout-method=thread
+      - if: not win
+        then:
+          - pytest tests --ignore=tests/frontend --timeout=300 --timeout-method=thread
+      - if: win
+        then:
+          # paradoc's plot tests render Plotly figures via python-kaleido, which
+          # drives headless Chrome through choreographer. No browser ships with
+          # conda, so provide one before running the suite:
+          #   Option A: download Chrome-for-Testing to choreographer's default
+          #             path (auto-discovered by the launcher).
+          #   Option B (fallback, no network): if the download fails, point
+          #             choreographer at the runner's pre-installed Edge.
+          - 'kaleido_get_chrome || set "BROWSER_PATH=C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"'
+          - pytest tests --ignore=tests/frontend --timeout=300 --timeout-method=thread
 
 about:
   license: GPL-3.0-or-later
