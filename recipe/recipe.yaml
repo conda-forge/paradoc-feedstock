@@ -58,6 +58,8 @@ tests:
       source:
         - tests
         - files
+      recipe:
+        - setup_browser.py
     requirements:
       run:
         - pytest
@@ -75,13 +77,14 @@ tests:
       - if: win
         then:
           # paradoc's plot tests render Plotly figures via python-kaleido, which
-          # drives headless Chrome through choreographer. No browser ships with
-          # conda, so provide one before running the suite:
-          #   Option A: download Chrome-for-Testing to choreographer's default
-          #             path (auto-discovered by the launcher).
-          #   Option B (fallback, no network): if the download fails, point
-          #             choreographer at the runner's pre-installed Edge.
-          - 'kaleido_get_chrome || set "BROWSER_PATH=C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"'
+          # drives a headless browser through choreographer. No browser ships
+          # with conda, and choreographer's auto-discovery picks the registry
+          # Chrome, which stalls the devtools handshake and hangs the suite.
+          # setup_browser.py resolves a usable browser -- Chrome-for-Testing
+          # (Option A) or the runner's pre-installed Edge (Option B fallback) --
+          # and prints its exe path; BROWSER_PATH overrides the auto-discovery.
+          - python setup_browser.py > browser_path.txt
+          - set /p BROWSER_PATH=<browser_path.txt
           - pytest tests --ignore=tests/frontend --timeout=300 --timeout-method=thread
 
 about:
