@@ -20,6 +20,8 @@ build:
   python:
     entry_points:
       - paradoc=paradoc.cli_app:app
+      - paradoc-serve=paradoc.serve.cli:app
+      - paradoc-migrate-syntax=paradoc.cli.migrate_syntax:app
 
 requirements:
   host:
