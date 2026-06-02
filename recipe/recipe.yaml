@@ -12,7 +12,9 @@ package:
 source:
   url: https://github.com/Krande/paradoc/archive/v${{ version }}.tar.gz
   sha256: 7892bc979d569701c08daeb8531a237173f22589e8e0306721df742a5f8e51ae
-  
+  patches:
+    - patches/remove_pypandoc_encoding_kwarg.patch
+
 build:
   number: 0
   noarch: python
