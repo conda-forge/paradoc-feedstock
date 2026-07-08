@@ -3,7 +3,7 @@ schema_version: 1
 context:
   python_min: "3.10"
   name: paradoc
-  version: "0.6.0"
+  version: "0.6.1"
 
 package:
   name: ${{ name }}
@@ -11,7 +11,7 @@ package:
 
 source:
   url: https://github.com/Krande/paradoc/archive/v${{ version }}.tar.gz
-  sha256: 7892bc979d569701c08daeb8531a237173f22589e8e0306721df742a5f8e51ae
+  sha256: 6d49cfa85366af39a2b46a14b0a902a54dc32b2c568cd4bc85c040d1c63b07f5
   patches:
     - patches/remove_pypandoc_encoding_kwarg.patch
 
@@ -74,19 +74,10 @@ tests:
       - if: not win
         then:
           - pytest tests --ignore=tests/frontend --timeout=300 --timeout-method=thread
-      - if: win
-        then:
-          # paradoc's plot tests render Plotly figures via python-kaleido, which
-          # drives a headless browser through choreographer. No browser ships
-          # with conda, and choreographer's auto-discovery picks the registry
-          # Chrome, which stalls the devtools handshake and hangs the suite.
-          # setup_browser.py resolves a usable browser -- Chrome-for-Testing
-          # (Option A) or the runner's pre-installed Edge (Option B fallback) --
-          # and prints its exe path; BROWSER_PATH overrides the auto-discovery.
+        else:
           - python setup_browser.py > browser_path.txt
           - set /p BROWSER_PATH=<browser_path.txt
           - pytest tests --ignore=tests/frontend --timeout=300 --timeout-method=thread
-
 about:
   license: GPL-3.0-or-later
   license_file: LICENSE
