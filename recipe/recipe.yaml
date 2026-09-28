@@ -3,7 +3,7 @@ schema_version: 1
 context:
   python_min: "3.10"
   name: paradoc
-  version: "0.6.1"
+  version: "0.7.0"
 
 package:
   name: ${{ name }}
@@ -11,7 +11,7 @@ package:
 
 source:
   url: https://github.com/Krande/paradoc/archive/v${{ version }}.tar.gz
-  sha256: 6d49cfa85366af39a2b46a14b0a902a54dc32b2c568cd4bc85c040d1c63b07f5
+  sha256: 097e6384bf42aa8990ab52d493e6f086e032519d2705bb914ed87598507595b6
   patches:
     - patches/remove_pypandoc_encoding_kwarg.patch
 
